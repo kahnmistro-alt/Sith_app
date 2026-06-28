@@ -1,6 +1,6 @@
 """
 Flask backend – local SQLite + CSV, with all demographic fields.
-Bind to 0.0.0.0 and PORT env var for Render deployment.
+Includes automatic schema migration to add new columns.
 """
 
 import csv
@@ -67,7 +67,7 @@ def init_db():
                 education_level TEXT NOT NULL
             )
         """)
-        # Demographics table – extended with all new fields
+        # Demographics table – base schema
         conn.execute("""
             CREATE TABLE IF NOT EXISTS applicant_demographics (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -75,25 +75,40 @@ def init_db():
                 submitted_at TEXT NOT NULL,
                 dob TEXT,
                 gender TEXT,
-                sex TEXT,
                 ethnicity TEXT,
                 disability TEXT,
-                marital_status TEXT,
-                household_size INTEGER,
-                family_structure TEXT,
-                occupation TEXT,
-                income REAL,
-                net_worth REAL,
-                language TEXT,
-                religion TEXT,
-                geographic_location TEXT,
-                housing_tenure TEXT,
-                birth_rate REAL,
-                death_rate REAL,
-                migration_status TEXT,
                 FOREIGN KEY (application_id) REFERENCES job_applications(id)
             )
         """)
+    # Now migrate to add any missing columns
+    migrate_db()
+
+def migrate_db():
+    """Add missing columns to applicant_demographics if they don't exist."""
+    with get_db() as conn:
+        columns_to_add = [
+            ("sex", "TEXT"),
+            ("marital_status", "TEXT"),
+            ("household_size", "INTEGER"),
+            ("family_structure", "TEXT"),
+            ("occupation", "TEXT"),
+            ("income", "REAL"),
+            ("net_worth", "REAL"),
+            ("language", "TEXT"),
+            ("religion", "TEXT"),
+            ("geographic_location", "TEXT"),
+            ("housing_tenure", "TEXT"),
+            ("birth_rate", "REAL"),
+            ("death_rate", "REAL"),
+            ("migration_status", "TEXT"),
+        ]
+        # Get existing columns
+        cur = conn.execute("PRAGMA table_info(applicant_demographics)")
+        existing = [row[1] for row in cur.fetchall()]
+        for col, col_type in columns_to_add:
+            if col not in existing:
+                conn.execute(f"ALTER TABLE applicant_demographics ADD COLUMN {col} {col_type}")
+        conn.commit()
 
 def insert_into_db(row):
     with get_db() as conn:
@@ -373,15 +388,19 @@ def submit():
 
 @app.route("/admin")
 def admin_dashboard():
-    db_submissions = get_db_submissions()
-    csv_submissions = get_csv_submissions()
-    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    return render_template(
-        "admin.html",
-        db_submissions=db_submissions,
-        csv_submissions=csv_submissions,
-        now=now
-    )
+    try:
+        db_submissions = get_db_submissions()
+        csv_submissions = get_csv_submissions()
+        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        return render_template(
+            "admin.html",
+            db_submissions=db_submissions,
+            csv_submissions=csv_submissions,
+            now=now
+        )
+    except Exception as e:
+        # Return error as plain text for debugging
+        return f"Admin error: {str(e)}", 500
 
 # ---------- startup ----------
 if __name__ == "__main__":
@@ -390,4 +409,5 @@ if __name__ == "__main__":
     print("✓ SQLite database and CSV ready.")
     # Bind to 0.0.0.0 and use PORT env var (for Render)
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)   # debug=False for production
+    # For debugging, you can set debug=True temporarily
+    app.run(host="0.0.0.0", port=port, debug=False)
