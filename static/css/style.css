@@ -1,0 +1,309 @@
+/* Instagram-inspired theme */
+
+:root {
+    --bg: #fafafa;
+    --card-bg: #ffffff;
+    --text-primary: #262626;
+    --text-secondary: #8e8e8e;
+    --border: #dbdbdb;
+    --instagram-blue: #405de6;
+    --instagram-purple: #5851db;
+    --instagram-pink: #e1306c;
+    --instagram-orange: #f56040;
+    --instagram-yellow: #fcaF45;
+    --gradient: linear-gradient(45deg, #405de6, #5851db, #833ab4, #c13584, #e1306c, #f56040, #f77737, #fcaF45);
+    --gradient-horizontal: linear-gradient(90deg, #405de6, #5851db, #833ab4, #c13584, #e1306c);
+    --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    margin: 0;
+}
+
+.card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 40px 36px;
+    width: 100%;
+    max-width: 480px;
+    border: 1px solid var(--border);
+    transition: box-shadow 0.2s;
+}
+
+.card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 4px;
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin: 0 0 28px;
+    line-height: 1.4;
+}
+
+.subtitle::before {
+    content: "✦ ";
+    color: var(--instagram-pink);
+}
+
+.section-heading {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 6px;
+}
+
+.section-note {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 0 0 18px;
+    line-height: 1.5;
+}
+
+.section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 28px 0 20px;
+}
+
+.field {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.optional-tag {
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
+
+input,
+textarea,
+select {
+    font-family: var(--font-family);
+    font-size: 14px;
+    padding: 12px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    color: var(--text-primary);
+    width: 100%;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--instagram-blue);
+    box-shadow: 0 0 0 3px rgba(64, 93, 230, 0.15);
+    background: white;
+}
+
+input:invalid:not(:placeholder-shown),
+textarea:invalid:not(:placeholder-shown) {
+    border-color: #ed4956;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%238e8e8e'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
+}
+
+.error {
+    font-size: 12px;
+    color: #ed4956;
+    min-height: 18px;
+    margin-top: 4px;
+}
+
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 12px;
+    background: var(--gradient-horizontal);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.05s;
+    letter-spacing: 0.3px;
+}
+
+button:hover {
+    opacity: 0.92;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.response-box {
+    margin-top: 20px;
+    padding: 14px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    background: #f0f8ff;
+    border-left: 4px solid var(--instagram-blue);
+    color: var(--text-primary);
+}
+
+.response-box.error-state {
+    background: #fef0f0;
+    border-left-color: #ed4956;
+    color: #ed4956;
+}
+
+.hidden {
+    display: none;
+}
+
+
+/* Admin specific overrides */
+
+.admin-wrapper {
+    max-width: 1400px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.admin-card {
+    background: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 30px;
+    border: 1px solid var(--border);
+    transition: box-shadow 0.2s;
+}
+
+.admin-card:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.10);
+}
+
+.admin-card h1 {
+    font-size: 24px;
+    margin-bottom: 2px;
+}
+
+.admin-card .subtitle {
+    margin-bottom: 20px;
+}
+
+.table-container {
+    overflow-x: auto;
+    margin: 12px 0;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.admin-table th {
+    background: var(--gradient-horizontal);
+    color: white;
+    padding: 12px 10px;
+    text-align: left;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.admin-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+}
+
+.admin-table tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+.admin-table tr:hover {
+    background: #f0f8ff;
+}
+
+.timestamp {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+}
+
+.empty-message {
+    padding: 30px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+
+/* Responsive */
+
+@media (max-width: 700px) {
+    .card {
+        padding: 24px 16px;
+    }
+    .admin-card {
+        padding: 16px;
+    }
+    .admin-table {
+        font-size: 11px;
+    }
+    .admin-table th,
+    .admin-table td {
+        padding: 6px 4px;
+    }
+}

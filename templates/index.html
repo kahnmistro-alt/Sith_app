@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Application Form</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <main class="card">
+    <h1>Job Application</h1>
+    <p class="subtitle">Complete all sections below to submit your application.</p>
+
+    <form id="contactForm" novalidate>
+
+      <h2 class="section-heading">Application Details</h2>
+
+      <div class="field">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" placeholder="Jane Doe" required minlength="2">
+        <span class="error" id="nameError"></span>
+      </div>
+
+      <div class="field">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="jane@example.com" required>
+        <span class="error" id="emailError"></span>
+      </div>
+
+      <div class="field">
+        <label for="phone">Cell Number</label>
+        <input type="tel" id="phone" name="phone" placeholder="+27 71 234 5678" required>
+        <span class="error" id="phoneError"></span>
+      </div>
+
+      <div class="field">
+        <label for="message">Message / Cover Note</label>
+        <textarea id="message" name="message" rows="5" placeholder="Tell us about yourself..." required minlength="5"></textarea>
+        <span class="error" id="messageError"></span>
+      </div>
+
+      <hr class="section-divider">
+
+      <h2 class="section-heading">Demographic Information</h2>
+      <p class="section-note">
+        This optional section supports statutory reporting. Answering does not affect your application.
+      </p>
+
+      <div class="field">
+        <label for="dob">Date of Birth <span class="optional-tag">(optional)</span></label>
+        <input type="date" id="dob" name="dob">
+        <span class="error" id="dobError"></span>
+      </div>
+
+      <div class="field">
+        <label for="gender">Gender <span class="optional-tag">(optional)</span></label>
+        <select id="gender" name="gender">
+          <option value="" disabled selected>Select…</option>
+          <option value="female">Female</option>
+          <option value="male">Male</option>
+          <option value="non_binary">Non-binary</option>
+          <option value="other">Other</option>
+          <option value="prefer_not_to_say">Prefer not to say</option>
+        </select>
+        <span class="error" id="genderError"></span>
+      </div>
+
+      <div class="field">
+        <label for="sex">Sex (biological) <span class="optional-tag">(optional)</span></label>
+        <select id="sex" name="sex">
+          <option value="" disabled selected>Select…</option>
+          <option value="female">Female</option>
+          <option value="male">Male</option>
+          <option value="other">Other</option>
+          <option value="prefer_not_to_say">Prefer not to say</option>
+        </select>
+        <span class="error" id="sexError"></span>
+      </div>
+
+      <div class="field">
+        <label for="ethnicity">Race / Ethnicity <span class="optional-tag">(optional)</span></label>
+        <select id="ethnicity" name="ethnicity">
+          <option value="" disabled selected>Select…</option>
+          <option value="black_african">Black African</option>
+          <option value="coloured">Coloured</option>
+          <option value="indian_asian">Indian/Asian</option>
+          <option value="white">White</option>
+          <option value="other">Other</option>
+          <option value="prefer_not_to_say">Prefer not to say</option>
+        </select>
+        <span class="error" id="ethnicityError"></span>
+      </div>
+
+      <div class="field">
+        <label for="disability">Disability Status <span class="optional-tag">(optional)</span></label>
+        <select id="disability" name="disability">
+          <option value="" disabled selected>Select…</option>
+          <option value="no_disability">No disability</option>
+          <option value="has_disability">Person with a disability</option>
+          <option value="prefer_not_to_say">Prefer not to say</option>
+        </select>
+        <span class="error" id="disabilityError"></span>
+      </div>
+
+      <div class="field">
+        <label for="maritalStatus">Marital Status <span class="optional-tag">(optional)</span></label>
+        <select id="maritalStatus" name="maritalStatus">
+          <option value="" disabled selected>Select…</option>
+          <option value="single">Single</option>
+          <option value="married">Married</option>
+          <option value="divorced">Divorced</option>
+          <option value="widowed">Widowed</option>
+          <option value="separated">Separated</option>
+          <option value="prefer_not_to_say">Prefer not to say</option>
+        </select>
+        <span class="error" id="maritalStatusError"></span>
+      </div>
+
+      <div class="field">
+        <label for="householdSize">Household Size <span class="optional-tag">(optional)</span></label>
+        <input type="number" id="householdSize" name="householdSize" placeholder="Number of people" min="0">
+        <span class="error" id="householdSizeError"></span>
+      </div>
+
+      <div class="field">
+        <label for="familyStructure">Family Structure <span class="optional-tag">(optional)</span></label>
+        <select id="familyStructure" name="familyStructure">
+          <option value="" disabled selected>Select…</option>
+          <option value="single_person">Single person</option>
+          <option value="couple_no_kids">Couple, no kids</option>
+          <option value="nuclear_family">Nuclear family</option>
+          <option value="extended_family">Extended family</option>
+          <option value="other">Other</option>
+        </select>
+        <span class="error" id="familyStructureError"></span>
+      </div>
+
+      <div class="field">
+        <label for="occupation">Occupation <span class="optional-tag">(optional)</span></label>
+        <input type="text" id="occupation" name="occupation" placeholder="e.g. Software Engineer">
+        <span class="error" id="occupationError"></span>
+      </div>
+
+      <div class="field">
+        <label for="income">Annual Income (ZAR) <span class="optional-tag">(optional)</span></label>
+        <input type="number" id="income" name="income" placeholder="e.g. 250000" step="0.01" min="0">
+        <span class="error" id="incomeError"></span>
+      </div>
+
+      <div class="field">
+        <label for="netWorth">Net Worth (ZAR) <span class="optional-tag">(optional)</span></label>
+        <input type="number" id="netWorth" name="netWorth" placeholder="e.g. 500000" step="0.01" min="0">
+        <span class="error" id="netWorthError"></span>
+      </div>
+
+      <div class="field">
+        <label for="language">Primary Language <span class="optional-tag">(optional)</span></label>
+        <input type="text" id="language" name="language" placeholder="e.g. English, Zulu">
+        <span class="error" id="languageError"></span>
+      </div>
+
+      <div class="field">
+        <label for="religion">Religion <span class="optional-tag">(optional)</span></label>
+        <input type="text" id="religion" name="religion" placeholder="e.g. Christian, Muslim">
+        <span class="error" id="religionError"></span>
+      </div>
+
+      <div class="field">
+        <label for="geographicLocation">Geographic Location <span class="optional-tag">(optional)</span></label>
+        <input type="text" id="geographicLocation" name="geographicLocation" placeholder="e.g. Cape Town">
+        <span class="error" id="geographicLocationError"></span>
+      </div>
+
+      <div class="field">
+        <label for="housingTenure">Housing Tenure <span class="optional-tag">(optional)</span></label>
+        <select id="housingTenure" name="housingTenure">
+          <option value="" disabled selected>Select…</option>
+          <option value="own">Own</option>
+          <option value="rent">Rent</option>
+          <option value="live_with_family">Live with family</option>
+          <option value="other">Other</option>
+        </select>
+        <span class="error" id="housingTenureError"></span>
+      </div>
+
+      <div class="field">
+        <label for="birthRate">Birth Rate (per 1000) <span class="optional-tag">(optional)</span></label>
+        <input type="number" id="birthRate" name="birthRate" placeholder="e.g. 15" step="0.1">
+        <span class="error" id="birthRateError"></span>
+      </div>
+
+      <div class="field">
+        <label for="deathRate">Death Rate (per 1000) <span class="optional-tag">(optional)</span></label>
+        <input type="number" id="deathRate" name="deathRate" placeholder="e.g. 8" step="0.1">
+        <span class="error" id="deathRateError"></span>
+      </div>
+
+      <div class="field">
+        <label for="migrationStatus">Migration Status <span class="optional-tag">(optional)</span></label>
+        <select id="migrationStatus" name="migrationStatus">
+          <option value="" disabled selected>Select…</option>
+          <option value="citizen">Citizen</option>
+          <option value="permanent_resident">Permanent Resident</option>
+          <option value="temporary_visa">Temporary Visa</option>
+          <option value="other">Other</option>
+        </select>
+        <span class="error" id="migrationStatusError"></span>
+      </div>
+
+      <div class="field">
+        <label for="nationality">Nationality</label>
+        <input type="text" id="nationality" name="nationality" placeholder="South African" required minlength="2">
+        <span class="error" id="nationalityError"></span>
+      </div>
+
+      <div class="field">
+        <label for="employmentStatus">Employment Status</label>
+        <select id="employmentStatus" name="employmentStatus" required>
+          <option value="" disabled selected>Select…</option>
+          <option value="employed">Employed</option>
+          <option value="unemployed">Unemployed</option>
+          <option value="self_employed">Self-employed</option>
+          <option value="student">Student</option>
+        </select>
+        <span class="error" id="employmentStatusError"></span>
+      </div>
+
+      <div class="field">
+        <label for="educationLevel">Education Level</label>
+        <select id="educationLevel" name="educationLevel" required>
+          <option value="" disabled selected>Select…</option>
+          <option value="level_1_highschool">Level 1 — High School</option>
+          <option value="level_2_matric">Level 2 — Matric</option>
+          <option value="level_3_n4_n6">Level 3 — N4–N6</option>
+        </select>
+        <span class="error" id="educationLevelError"></span>
+      </div>
+
+      <button type="submit" id="submitBtn">Submit Application</button>
+    </form>
+
+    <div id="responseBox" class="response-box hidden"></div>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
