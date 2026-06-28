@@ -1,5 +1,6 @@
 """
 Flask backend – local SQLite + CSV, with all demographic fields.
+Bind to 0.0.0.0 and PORT env var for Render deployment.
 """
 
 import csv
@@ -32,7 +33,7 @@ CSV_HEADERS = [
 EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
 PHONE_RE = re.compile(r"^[0-9+\-\s()]{7,20}$")
 
-# Validations for dropdowns (new ones added)
+# Validations for dropdowns
 VALID_GENDERS = {"female", "male", "non_binary", "other", "prefer_not_to_say", None}
 VALID_SEX = {"female", "male", "other", "prefer_not_to_say", None}
 VALID_ETHNICITIES = {"black_african", "coloured", "indian_asian", "white", "other", "prefer_not_to_say", None}
@@ -387,4 +388,6 @@ if __name__ == "__main__":
     init_db()
     ensure_csv_header()
     print("✓ SQLite database and CSV ready.")
-    app.run(debug=True, port=5000)
+    # Bind to 0.0.0.0 and use PORT env var (for Render)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=False)   # debug=False for production
