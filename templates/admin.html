@@ -3,26 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin – Submissions</title>
+  <title>Admin – Profiles</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
   <div class="admin-wrapper">
-    <!-- Database Submissions -->
     <div class="admin-card">
-      <h1>📋 Database Submissions</h1>
-      <p class="subtitle">from SQLite (primary storage)</p>
+      <h1>📋 Profile Submissions</h1>
+      <p class="subtitle">from Supabase (primary storage)</p>
       <div class="table-container">
         {% if db_submissions %}
           <table class="admin-table">
             <thead>
               <tr>
                 <th>ID</th><th>Date</th><th>Name</th><th>Email</th><th>Phone</th>
-                <th>Nationality</th><th>Employment</th><th>Education</th>
-                <th>DOB</th><th>Gender</th><th>Sex</th><th>Ethnicity</th><th>Disability</th>
-                <th>Marital</th><th>HH Size</th><th>Family</th><th>Occupation</th>
-                <th>Income</th><th>Net Worth</th><th>Language</th><th>Religion</th>
-                <th>Location</th><th>Housing</th><th>Birth Rate</th><th>Death Rate</th><th>Migration</th>
+                <th>DOB</th><th>Gender</th><th>Nationality</th><th>Message</th>
               </tr>
             </thead>
             <tbody>
@@ -32,54 +27,33 @@
                 <td>{{ s.submitted_at[:16] }}</td>
                 <td>{{ s.name }}</td>
                 <td>{{ s.email }}</td>
-                <td>{{ s.phone }}</td>
-                <td>{{ s.nationality }}</td>
-                <td>{{ s.employment_status.replace('_', ' ') }}</td>
-                <td>{{ s.education_level.replace('_', ' ') }}</td>
+                <td>{{ s.phone or '-' }}</td>
                 <td>{{ s.dob or '-' }}</td>
                 <td>{{ s.gender or '-' }}</td>
-                <td>{{ s.sex or '-' }}</td>
-                <td>{{ s.ethnicity or '-' }}</td>
-                <td>{{ s.disability or '-' }}</td>
-                <td>{{ s.marital_status or '-' }}</td>
-                <td>{{ s.household_size or '-' }}</td>
-                <td>{{ s.family_structure or '-' }}</td>
-                <td>{{ s.occupation or '-' }}</td>
-                <td>{{ s.income or '-' }}</td>
-                <td>{{ s.net_worth or '-' }}</td>
-                <td>{{ s.language or '-' }}</td>
-                <td>{{ s.religion or '-' }}</td>
-                <td>{{ s.geographic_location or '-' }}</td>
-                <td>{{ s.housing_tenure or '-' }}</td>
-                <td>{{ s.birth_rate or '-' }}</td>
-                <td>{{ s.death_rate or '-' }}</td>
-                <td>{{ s.migration_status or '-' }}</td>
+                <td>{{ s.nationality or '-' }}</td>
+                <td>{{ s.message or '-' }}</td>
               </tr>
               {% endfor %}
             </tbody>
           </table>
         {% else %}
-          <div class="empty-message">No submissions in database yet.</div>
+          <div class="empty-message">No profiles yet.</div>
         {% endif %}
       </div>
       <div class="timestamp">⏱ Last updated: {{ now }}</div>
     </div>
 
-    <!-- CSV Backup Submissions -->
+    <!-- CSV backup table (same columns) -->
     <div class="admin-card">
       <h1>📄 CSV Backup</h1>
-      <p class="subtitle">from submissions.csv (fallback / export)</p>
+      <p class="subtitle">from submissions.csv (fallback)</p>
       <div class="table-container">
         {% if csv_submissions %}
           <table class="admin-table">
             <thead>
               <tr>
                 <th>#</th><th>Date</th><th>Name</th><th>Email</th><th>Phone</th>
-                <th>Nationality</th><th>Employment</th><th>Education</th>
-                <th>DOB</th><th>Gender</th><th>Sex</th><th>Ethnicity</th><th>Disability</th>
-                <th>Marital</th><th>HH Size</th><th>Family</th><th>Occupation</th>
-                <th>Income</th><th>Net Worth</th><th>Language</th><th>Religion</th>
-                <th>Location</th><th>Housing</th><th>Birth Rate</th><th>Death Rate</th><th>Migration</th>
+                <th>DOB</th><th>Gender</th><th>Nationality</th><th>Message</th>
               </tr>
             </thead>
             <tbody>
@@ -89,28 +63,11 @@
                 <td>{{ row.timestamp[:16] if row.timestamp else '-' }}</td>
                 <td>{{ row.name }}</td>
                 <td>{{ row.email }}</td>
-                <td>{{ row.phone }}</td>
-                <td>{{ row.nationality }}</td>
-                <td>{{ row.employment_status.replace('_', ' ') }}</td>
-                <td>{{ row.education_level.replace('_', ' ') }}</td>
+                <td>{{ row.phone or '-' }}</td>
                 <td>{{ row.dob or '-' }}</td>
                 <td>{{ row.gender or '-' }}</td>
-                <td>{{ row.sex or '-' }}</td>
-                <td>{{ row.ethnicity or '-' }}</td>
-                <td>{{ row.disability or '-' }}</td>
-                <td>{{ row.marital_status or '-' }}</td>
-                <td>{{ row.household_size or '-' }}</td>
-                <td>{{ row.family_structure or '-' }}</td>
-                <td>{{ row.occupation or '-' }}</td>
-                <td>{{ row.income or '-' }}</td>
-                <td>{{ row.net_worth or '-' }}</td>
-                <td>{{ row.language or '-' }}</td>
-                <td>{{ row.religion or '-' }}</td>
-                <td>{{ row.geographic_location or '-' }}</td>
-                <td>{{ row.housing_tenure or '-' }}</td>
-                <td>{{ row.birth_rate or '-' }}</td>
-                <td>{{ row.death_rate or '-' }}</td>
-                <td>{{ row.migration_status or '-' }}</td>
+                <td>{{ row.nationality or '-' }}</td>
+                <td>{{ row.message or '-' }}</td>
               </tr>
               {% endfor %}
             </tbody>
