@@ -3,65 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>User Profile</title>
+  <title>Submit CV</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
   <main class="card">
-    <h1>Profile</h1>
-    <p class="subtitle">Tell us a little about yourself.</p>
+    <h1>📄 Submit Your CV</h1>
+    <p class="subtitle">Paste your CV in plain text (.txt) format below.</p>
 
-    <form id="profileForm" novalidate>
+    <form id="cvForm" novalidate>
       <div class="field">
-        <label for="name">Full Name *</label>
-        <input type="text" id="name" name="name" placeholder="Jane Doe" required minlength="2">
-        <span class="error" id="nameError"></span>
+        <label for="cv_text">CV Content *</label>
+        <textarea id="cv_text" name="cv_text" rows="12" placeholder="Paste your CV here..."></textarea>
+        <span class="error" id="cvError"></span>
       </div>
 
-      <div class="field">
-        <label for="email">Email Address *</label>
-        <input type="email" id="email" name="email" placeholder="jane@example.com" required>
-        <span class="error" id="emailError"></span>
-      </div>
-
-      <div class="field">
-        <label for="phone">Phone Number</label>
-        <input type="tel" id="phone" name="phone" placeholder="+27 71 234 5678">
-        <span class="error" id="phoneError"></span>
-      </div>
-
-      <div class="field">
-        <label for="dob">Date of Birth</label>
-        <input type="date" id="dob" name="dob">
-        <span class="error" id="dobError"></span>
-      </div>
-
-      <div class="field">
-        <label for="gender">Gender</label>
-        <select id="gender" name="gender">
-          <option value="" disabled selected>Select…</option>
-          <option value="female">Female</option>
-          <option value="male">Male</option>
-          <option value="non_binary">Non-binary</option>
-          <option value="other">Other</option>
-          <option value="prefer_not_to_say">Prefer not to say</option>
-        </select>
-        <span class="error" id="genderError"></span>
-      </div>
-
-      <div class="field">
-        <label for="nationality">Nationality</label>
-        <input type="text" id="nationality" name="nationality" placeholder="South African">
-        <span class="error" id="nationalityError"></span>
-      </div>
-
-      <div class="field">
-        <label for="message">Short Bio / Message</label>
-        <textarea id="message" name="message" rows="4" placeholder="Tell us a bit about yourself…"></textarea>
-        <span class="error" id="messageError"></span>
-      </div>
-
-      <button type="submit" id="submitBtn">Submit Application</button>
+      <button type="submit" id="submitBtn">Submit CV</button>
     </form>
 
     <div id="responseBox" class="response-box hidden"></div>

@@ -1,14 +1,13 @@
 """
-Flask backend – minimal profile collection with Supabase persistence.
+Flask backend – collects CV text + IP address and stores in Supabase.
 - Uses Supabase API (service role key) for permanent storage.
-- Falls back to CSV if database fails (optional).
-- Checks environment variables on startup.
+- Falls back to CSV if database fails.
+- Captures real IP even behind proxies (Render/Heroku).
 """
 
 import os
 import sys
 import csv
-import re
 from datetime import datetime, timezone
 from flask import Flask, jsonify, render_template, request
 from supabase import create_client, Client
@@ -35,11 +34,7 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 # ---------- constants ----------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CSV_PATH = os.path.join(BASE_DIR, "submissions.csv")
-CSV_HEADERS = ["timestamp", "name", "email", "phone", "dob", "gender", "nationality", "message"]
-
-EMAIL_RE = re.compile(r"^[^\s@]+@[^\s@]+\.[^\s@]+$")
-PHONE_RE = re.compile(r"^[0-9+\-\s()]{7,20}$")
-VALID_GENDERS = {"female", "male", "non_binary", "other", "prefer_not_to_say", None}
+CSV_HEADERS = ["submitted_at", "ip_address", "user_agent", "cv_text"]
 
 # ---------- CSV backup helpers ----------
 def ensure_csv_header():
@@ -60,6 +55,15 @@ def get_csv_submissions():
         reader = csv.DictReader(f)
         return [{h: row.get(h, "") for h in CSV_HEADERS} for row in reader]
 
+# ---------- IP extraction helper ----------
+def get_client_ip():
+    """Extract the real client IP from request headers."""
+    if "X-Forwarded-For" in request.headers:
+        return request.headers.get("X-Forwarded-For").split(",")[0].strip()
+    if "X-Real-IP" in request.headers:
+        return request.headers.get("X-Real-IP")
+    return request.remote_addr
+
 # ---------- routes ----------
 @app.route("/")
 def index():
@@ -71,47 +75,33 @@ def submit():
     if not data:
         return jsonify({"error": "No data received"}), 400
 
-    # Extract and validate
-    name = (data.get("name") or "").strip()
-    email = (data.get("email") or "").strip()
-    phone = (data.get("phone") or "").strip() or None
-    dob = (data.get("dob") or "").strip() or None
-    gender = (data.get("gender") or "").strip() or None
-    nationality = (data.get("nationality") or "").strip() or None
-    message = (data.get("message") or "").strip() or None
+    cv_text = (data.get("cv_text") or "").strip()
 
-    if len(name) < 2:
-        return jsonify({"error": "Name must be at least 2 characters"}), 400
-    if not EMAIL_RE.match(email):
-        return jsonify({"error": "Invalid email address"}), 400
-    if phone and not PHONE_RE.match(phone):
-        return jsonify({"error": "Invalid phone number"}), 400
-    if gender and gender not in VALID_GENDERS:
-        return jsonify({"error": "Invalid gender option"}), 400
+    if not cv_text:
+        return jsonify({"error": "CV content cannot be empty"}), 400
+
+    # Get IP and user-agent automatically
+    ip_address = get_client_ip()
+    user_agent = request.headers.get("User-Agent", "unknown")
 
     row = {
         "submitted_at": datetime.now(timezone.utc).isoformat(),
-        "name": name,
-        "email": email,
-        "phone": phone,
-        "dob": dob,
-        "gender": gender,
-        "nationality": nationality,
-        "message": message,
+        "ip_address": ip_address,
+        "user_agent": user_agent,
+        "cv_text": cv_text,
     }
 
-    # 1. Write CSV backup (always)
+    # 1. CSV backup (always)
     try:
         append_to_csv(row)
     except OSError as e:
-        # Log but don't fail – we still try the database.
         print(f"⚠️ CSV write failed: {e}")
 
-    # 2. Insert into Supabase
+    # 2. Insert into Supabase (table name: cv_submissions)
     try:
-        result = supabase.table("profiles").insert(row).execute()
+        result = supabase.table("cv_submissions").insert(row).execute()
         if result.data:
-            return jsonify({"message": f"Thanks, {name} – profile saved."}), 200
+            return jsonify({"message": f"CV submitted from IP {ip_address}."}), 200
         else:
             return jsonify({"error": "Database insert returned no data"}), 500
     except Exception as e:
@@ -119,15 +109,14 @@ def submit():
 
 @app.route("/admin")
 def admin_dashboard():
-    # Fetch from Supabase
+    # Fetch from Supabase (new table)
     try:
-        result = supabase.table("profiles").select("*").order("submitted_at", desc=True).execute()
+        result = supabase.table("cv_submissions").select("*").order("submitted_at", desc=True).execute()
         db_submissions = result.data if result.data else []
     except Exception as e:
         db_submissions = []
         print(f"⚠️ Admin DB fetch error: {e}")
 
-    # Optionally read CSV as fallback / comparison
     csv_submissions = get_csv_submissions()
 
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -142,20 +131,18 @@ def admin_dashboard():
 def test_db():
     """Quick connectivity test for Supabase."""
     try:
-        supabase.table("profiles").select("count", count="exact").limit(1).execute()
+        supabase.table("cv_submissions").select("count", count="exact").limit(1).execute()
         return "✅ Supabase API connection successful"
     except Exception as e:
         return f"❌ Supabase error: {e}"
 
 # ---------- startup ----------
 if __name__ == "__main__":
-    # Ensure CSV header exists
     ensure_csv_header()
     print("✓ CSV backup file ready.")
 
-    # Optional: verify Supabase connection at startup
     try:
-        supabase.table("profiles").select("count", count="exact").limit(1).execute()
+        supabase.table("cv_submissions").select("count", count="exact").limit(1).execute()
         print("✓ Connected to Supabase successfully.")
     except Exception as e:
         print(f"⚠️ Could not connect to Supabase on startup: {e}")

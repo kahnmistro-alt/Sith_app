@@ -3,80 +3,77 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin – Profiles</title>
+  <title>Admin – CV Submissions</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-  <div class="admin-wrapper">
+  <div class="admin-wrapper" style="max-width: 1400px; margin: 0 auto; padding: 24px;">
     <div class="admin-card">
-      <h1>📋 Profile Submissions</h1>
-      <p class="subtitle">from Supabase (primary storage)</p>
+      <h1>📋 CV Submissions</h1>
+      <p class="subtitle">All submitted CVs with IP and user‑agent.</p>
+      <p class="timestamp">Last updated: {{ now }}</p>
+
+      <h3 style="margin-top: 24px;">📦 From Supabase</h3>
       <div class="table-container">
-        {% if db_submissions %}
-          <table class="admin-table">
-            <thead>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>IP Address</th>
+              <th>User Agent</th>
+              <th>CV Text</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if db_submissions %}
+              {% for row in db_submissions %}
               <tr>
-                <th>ID</th><th>Date</th><th>Name</th><th>Email</th><th>Phone</th>
-                <th>DOB</th><th>Gender</th><th>Nationality</th><th>Message</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for s in db_submissions %}
-              <tr>
-                <td>{{ s.id }}</td>
-                <td>{{ s.submitted_at[:16] }}</td>
-                <td>{{ s.name }}</td>
-                <td>{{ s.email }}</td>
-                <td>{{ s.phone or '-' }}</td>
-                <td>{{ s.dob or '-' }}</td>
-                <td>{{ s.gender or '-' }}</td>
-                <td>{{ s.nationality or '-' }}</td>
-                <td>{{ s.message or '-' }}</td>
+                <td>{{ row.submitted_at }}</td>
+                <td>{{ row.ip_address }}</td>
+                <td style="font-size:11px; max-width:200px; word-break:break-all;">{{ row.user_agent }}</td>
+                <td style="white-space:pre-wrap; max-width:400px; word-wrap:break-word;">
+                  {{ row.cv_text[:500] }}{% if row.cv_text|length > 500 %}…{% endif %}
+                </td>
               </tr>
               {% endfor %}
-            </tbody>
-          </table>
-        {% else %}
-          <div class="empty-message">No profiles yet.</div>
-        {% endif %}
+            {% else %}
+              <tr><td colspan="4" class="empty-message">No submissions found in database.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
       </div>
-      <div class="timestamp">⏱ Last updated: {{ now }}</div>
-    </div>
 
-    <!-- CSV backup table (same columns) -->
-    <div class="admin-card">
-      <h1>📄 CSV Backup</h1>
-      <p class="subtitle">from submissions.csv (fallback)</p>
+      <hr class="section-divider">
+
+      <h3>💾 CSV Backup (local file)</h3>
       <div class="table-container">
-        {% if csv_submissions %}
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>#</th><th>Date</th><th>Name</th><th>Email</th><th>Phone</th>
-                <th>DOB</th><th>Gender</th><th>Nationality</th><th>Message</th>
-              </tr>
-            </thead>
-            <tbody>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>IP Address</th>
+              <th>User Agent</th>
+              <th>CV Text</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if csv_submissions %}
               {% for row in csv_submissions %}
               <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ row.timestamp[:16] if row.timestamp else '-' }}</td>
-                <td>{{ row.name }}</td>
-                <td>{{ row.email }}</td>
-                <td>{{ row.phone or '-' }}</td>
-                <td>{{ row.dob or '-' }}</td>
-                <td>{{ row.gender or '-' }}</td>
-                <td>{{ row.nationality or '-' }}</td>
-                <td>{{ row.message or '-' }}</td>
+                <td>{{ row.submitted_at }}</td>
+                <td>{{ row.ip_address }}</td>
+                <td style="font-size:11px; max-width:200px; word-break:break-all;">{{ row.user_agent }}</td>
+                <td style="white-space:pre-wrap; max-width:400px; word-wrap:break-word;">
+                  {{ row.cv_text[:500] }}{% if row.cv_text|length > 500 %}…{% endif %}
+                </td>
               </tr>
               {% endfor %}
-            </tbody>
-          </table>
-        {% else %}
-          <div class="empty-message">CSV file is empty or not found.</div>
-        {% endif %}
+            {% else %}
+              <tr><td colspan="4" class="empty-message">No CSV backup found.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
       </div>
-      <div class="timestamp">⏱ CSV file as of {{ now }}</div>
     </div>
   </div>
 </body>
