@@ -6,6 +6,7 @@ Stores in Supabase table: contact_submissions
 import os
 import sys
 import csv
+import re  # <-- THIS WAS MISSING! ADD THIS LINE.
 from datetime import datetime, timezone
 from flask import Flask, jsonify, render_template, request
 from supabase import create_client, Client
