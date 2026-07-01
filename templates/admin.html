@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin – CV Submissions</title>
+  <title>Admin – Submissions</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
   <div class="admin-wrapper" style="max-width: 1400px; margin: 0 auto; padding: 24px;">
     <div class="admin-card">
-      <h1>📋 CV Submissions</h1>
-      <p class="subtitle">All submitted CVs with IP and user‑agent.</p>
+      <h1>📋 Contact Submissions</h1>
+      <p class="subtitle">All submitted contact info with IP and user‑agent.</p>
       <p class="timestamp">Last updated: {{ now }}</p>
 
       <h3 style="margin-top: 24px;">📦 From Supabase</h3>
@@ -19,9 +19,13 @@
           <thead>
             <tr>
               <th>Timestamp</th>
-              <th>IP Address</th>
+              <th>IP</th>
               <th>User Agent</th>
-              <th>CV Text</th>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>ID Number</th>
+              <th>Address</th>
             </tr>
           </thead>
           <tbody>
@@ -30,14 +34,16 @@
               <tr>
                 <td>{{ row.submitted_at }}</td>
                 <td>{{ row.ip_address }}</td>
-                <td style="font-size:11px; max-width:200px; word-break:break-all;">{{ row.user_agent }}</td>
-                <td style="white-space:pre-wrap; max-width:400px; word-wrap:break-word;">
-                  {{ row.cv_text[:500] }}{% if row.cv_text|length > 500 %}…{% endif %}
-                </td>
+                <td style="font-size:11px; max-width:150px; word-break:break-all;">{{ row.user_agent }}</td>
+                <td>{{ row.full_name }}</td>
+                <td>{{ row.email }}</td>
+                <td>{{ row.phone or '-' }}</td>
+                <td>{{ row.id_number }}</td>
+                <td style="max-width:200px; word-wrap:break-word;">{{ row.address or '-' }}</td>
               </tr>
               {% endfor %}
             {% else %}
-              <tr><td colspan="4" class="empty-message">No submissions found in database.</td></tr>
+              <tr><td colspan="8" class="empty-message">No submissions found.</td></tr>
             {% endif %}
           </tbody>
         </table>
@@ -45,15 +51,19 @@
 
       <hr class="section-divider">
 
-      <h3>💾 CSV Backup (local file)</h3>
+      <h3>💾 CSV Backup</h3>
       <div class="table-container">
         <table class="admin-table">
           <thead>
             <tr>
               <th>Timestamp</th>
-              <th>IP Address</th>
+              <th>IP</th>
               <th>User Agent</th>
-              <th>CV Text</th>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>ID Number</th>
+              <th>Address</th>
             </tr>
           </thead>
           <tbody>
@@ -62,14 +72,16 @@
               <tr>
                 <td>{{ row.submitted_at }}</td>
                 <td>{{ row.ip_address }}</td>
-                <td style="font-size:11px; max-width:200px; word-break:break-all;">{{ row.user_agent }}</td>
-                <td style="white-space:pre-wrap; max-width:400px; word-wrap:break-word;">
-                  {{ row.cv_text[:500] }}{% if row.cv_text|length > 500 %}…{% endif %}
-                </td>
+                <td style="font-size:11px; max-width:150px; word-break:break-all;">{{ row.user_agent }}</td>
+                <td>{{ row.full_name }}</td>
+                <td>{{ row.email }}</td>
+                <td>{{ row.phone or '-' }}</td>
+                <td>{{ row.id_number }}</td>
+                <td style="max-width:200px; word-wrap:break-word;">{{ row.address or '-' }}</td>
               </tr>
               {% endfor %}
             {% else %}
-              <tr><td colspan="4" class="empty-message">No CSV backup found.</td></tr>
+              <tr><td colspan="8" class="empty-message">No CSV backup found.</td></tr>
             {% endif %}
           </tbody>
         </table>
